@@ -1,11 +1,11 @@
 ! Computes an approximation of Pi with a Monte Carlo algorithm
 ! OpenMP version
 ! Vincent Magnin, 2021-04-22
-! Last modification: 2021-05-02
+! Last modification: 2021-05-03
 ! MIT license
 ! $ gfortran -Wall -Wextra -std=f2008 -pedantic -O3 -fopenmp pi_monte_carlo_openmp.f90 && time ./a.out
 
-program pi_monte_carlo_serial
+program pi_monte_carlo_openmp
     use, intrinsic :: iso_fortran_env, only: wp=>real64, int64
     implicit none
     real(wp)        :: x, y     ! Coordinates of a point
@@ -31,4 +31,4 @@ program pi_monte_carlo_serial
     write(*, '(a, i0, a, i0)') "4 * ", k, " / ", n
     write(*, '(a, f17.15)') "Pi ~ ", (4.0_wp * k) / n
 
-end program pi_monte_carlo_serial
+end program pi_monte_carlo_openmp
