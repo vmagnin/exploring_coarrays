@@ -17,6 +17,7 @@ In this repository, you will find:
 * a serial version of the algorithm.
 * A parallel version using OpenMP.
 * A parallel version using Coarrays.
+* Another coarrays version printing steadily intermediate results.
 
 ### Compilation
 
