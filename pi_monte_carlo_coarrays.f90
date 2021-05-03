@@ -1,13 +1,13 @@
 ! Computes an approximation of Pi with a Monte Carlo algorithm
-! Coarrays version v2
+! Coarrays with final results
 ! Vincent Magnin, 2021-04-22
-! Last modification: 2021-05-02
+! Last modification: 2021-05-03
 ! MIT license
-! $ caf -Wall -Wextra -std=f2008 -pedantic -O3 pi_monte_carlo_coarrays_v2.f90 && time cafrun -n 4 ./a.out
+! $ caf -Wall -Wextra -std=f2008 -pedantic -O3 pi_monte_carlo_coarrays.f90 && time cafrun -n 4 ./a.out
 ! or with ifort :
-! $ ifort -O3 -coarray pi_monte_carlo_coarrays_v2.f90 && time ./a.out
+! $ ifort -O3 -coarray pi_monte_carlo_coarrays.f90 && time ./a.out
 
-program pi_monte_carlo_coarrays
+program pi_monte_carlo_coarrays_steady
     use, intrinsic :: iso_fortran_env, only: wp=>real64, int64
     implicit none
     real(wp)        :: x, y     ! Coordinates of a point
@@ -40,6 +40,9 @@ program pi_monte_carlo_coarrays
         do j = 1, num_images()
             kt = kt + k[j]
         end do
-        write(*, '(a,i0,a,i0,a,f17.15)') "4 * ", kt, " / ", n, " = ", (4.0_wp*kt)/n
+
+        write(*,*)
+        write(*, '(a, i0, a, i0)') "4 * ", kt, " / ", n
+        write(*, '(a, f17.15)') "Pi ~ ", (4.0_wp * kt) / n
     end if
-end program pi_monte_carlo_coarrays
+end program pi_monte_carlo_coarrays_steady

@@ -1,13 +1,13 @@
 ! Computes an approximation of Pi with a Monte Carlo algorithm
-! Coarrays version
+! Coarrays version with steady results
 ! Vincent Magnin, 2021-04-22
-! Last modification: 2021-05-02
+! Last modification: 2021-05-03
 ! MIT license
-! $ caf -Wall -Wextra -std=f2008 -pedantic -O3 pi_monte_carlo_coarrays.f90 && time cafrun -n 4 ./a.out
+! $ caf -Wall -Wextra -std=f2008 -pedantic -O3 pi_monte_carlo_coarrays_steady.f90 && time cafrun -n 4 ./a.out
 ! or with ifort :
-! $ ifort -O3 -coarray pi_monte_carlo_coarrays_v2.f90 && time ./a.out
+! $ ifort -O3 -coarray pi_monte_carlo_coarrays_steady.f90 && time ./a.out
 
-program pi_monte_carlo_coarrays
+program pi_monte_carlo_coarrays_steady
     use, intrinsic :: iso_fortran_env, only: wp=>real64, int64
     implicit none
     real(wp)        :: x, y     ! Coordinates of a point
@@ -32,7 +32,7 @@ program pi_monte_carlo_coarrays
         ! Is it in the quarter disk (R=1, center=origin) ?
         if ((x**2 + y**2) < 1.0_wp) k = k + 1
 
-        ! Once in a while:
+        ! Once in a while (20 times):
         if (mod(i, n_per_image/20) == 0) then
             sync all
             if (this_image() == 1) then
@@ -41,9 +41,10 @@ program pi_monte_carlo_coarrays
                     kt = kt + k[j]
                 end do
                 it = i*num_images()
-                write(*, '(i12, 4x, i12, 4x, f17.15)') it, kt, (4.0_wp * kt) / it
+
+                write(*, '(a, i0, a, i0, a, F17.15)') "4 * ", kt, " / ", it, " = ", (4.0_wp * kt) / it
             end if
         end if
     end do
 
-end program pi_monte_carlo_coarrays
+end program pi_monte_carlo_coarrays_steady
