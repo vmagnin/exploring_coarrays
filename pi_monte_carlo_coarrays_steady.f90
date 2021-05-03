@@ -1,9 +1,9 @@
 ! Computes an approximation of Pi with a Monte Carlo algorithm
-! Coarrays version v2
+! Coarrays version
 ! Vincent Magnin, 2021-04-22
 ! Last modification: 2021-05-02
 ! MIT license
-! $ caf -Wall -Wextra -std=f2008 -pedantic -O3 pi_monte_carlo_coarrays_v2.f90 && time cafrun -n 4 ./a.out
+! $ caf -Wall -Wextra -std=f2008 -pedantic -O3 pi_monte_carlo_coarrays.f90 && time cafrun -n 4 ./a.out
 ! or with ifort :
 ! $ ifort -O3 -coarray pi_monte_carlo_coarrays_v2.f90 && time ./a.out
 
@@ -14,7 +14,7 @@ program pi_monte_carlo_coarrays
     integer(int64)  :: n        ! Total number of points
     integer(int64)  :: k[*]     ! Points into the quarter disk
     integer(int64)  :: i        ! Loop counter
-    integer(int64)  :: j, kt
+    integer(int64)  :: j, kt, it
     integer(int64)  :: n_per_image     ! Number of parallel images
 
     n = 1000000000
@@ -31,15 +31,19 @@ program pi_monte_carlo_coarrays
 
         ! Is it in the quarter disk (R=1, center=origin) ?
         if ((x**2 + y**2) < 1.0_wp) k = k + 1
+
+        ! Once in a while:
+        if (mod(i, n_per_image/20) == 0) then
+            sync all
+            if (this_image() == 1) then
+                kt = 0
+                do j = 1, num_images()
+                    kt = kt + k[j]
+                end do
+                it = i*num_images()
+                write(*, '(i12, 4x, i12, 4x, f17.15)') it, kt, (4.0_wp * kt) / it
+            end if
+        end if
     end do
 
-    ! At the end:
-    sync all
-    if (this_image() == 1) then
-        kt = 0
-        do j = 1, num_images()
-            kt = kt + k[j]
-        end do
-        write(*, '(a,i0,a,i0,a,f17.15)') "4 * ", kt, " / ", n, " = ", (4.0_wp*kt)/n
-    end if
 end program pi_monte_carlo_coarrays
