@@ -1,6 +1,6 @@
 # exploring_coarrays
 
-Let's explore the modern Fortran coarrays features for parallel programming.
+Let's explore the modern Fortran coarrays features for parallel programming: coarrays, images, etc.
 
 ## Pi Monte Carlo
 
@@ -44,7 +44,7 @@ ifort -O3 -coarray pi_monte_carlo_coarrays.f90 && time ./a.out
 
 ### Results
 
-CPU time in seconds computed with an Intel(R) Core(TM) i7-5500U CPU @ 2.40GHz with 2 cores / 4 threads (using 4 images for parallel versions):
+CPU time in seconds computed with an Intel(R) Core(TM) i7-5500U CPU @ 2.40GHz with 2 cores / 4 threads (using 4 images for parallel versions), under Ubuntu 20.10:
 
 | Version         | gfortran  | ifort   |
 | --------------- | --------- | ------- |
@@ -52,6 +52,13 @@ CPU time in seconds computed with an Intel(R) Core(TM) i7-5500U CPU @ 2.40GHz wi
 | OpenMP          |     9.9 s |  93.0 s |
 | Coarrays        |    16.2 s |  14.4 s |
 | Coarrays steady |    33.2 s |  35.9 s |
+| Co_sum          |    13.0 s |  14.1 s |
+| Co_sum steady   |    17.1 s |  17.1 s | 
+
+The compiler versions are:
+
+* ifort 2021.2.0
+* gfortran 10.2.0
 
 Warning: **work in progress! This benchmark is not definitive.**
 	
