@@ -1,13 +1,14 @@
 ! Computes an approximation of Pi with a Monte Carlo algorithm
-! Coarrays version with steady results
+! Co_sum version with steady results
 ! Vincent Magnin, 2021-04-22
+! and Brad Richardson
 ! Last modification: 2021-05-03
 ! MIT license
-! $ caf -Wall -Wextra -std=f2018 -pedantic -O3 pi_monte_carlo_coarrays_steady.f90 && time cafrun -n 4 ./a.out
+! $ caf -Wall -Wextra -std=f2018 -pedantic -O3 pi_monte_carlo_co_sum_steady.f90 && time cafrun -n 4 ./a.out
 ! or with ifort :
-! $ ifort -O3 -coarray pi_monte_carlo_coarrays_steady.f90 && time ./a.out
+! $ ifort -O3 -coarray pi_monte_carlo_co_sum_steady.f90 && time ./a.out
 
-program pi_monte_carlo_coarrays_steady
+program pi_monte_carlo_co_sum_steady
     use, intrinsic :: iso_fortran_env, only: wp=>real64, int64
     implicit none
     real(wp)        :: x, y     ! Coordinates of a point
@@ -44,4 +45,4 @@ program pi_monte_carlo_coarrays_steady
         end if
     end do
 
-end program pi_monte_carlo_coarrays_steady
+end program pi_monte_carlo_co_sum_steady
