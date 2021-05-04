@@ -8,7 +8,12 @@ Let's explore the modern Fortran coarrays features for parallel programming.
 
 Imagine a disk of radius R=1 inside a square of side 2*R. And draw N points inside the square. Count K, the number of points inside the disk. The bigger N, the closer `4*K/N` will be close to Pi. Because `K/N` will tend to be proportional to the ratio between the surface of the disk (`Pi*R**2`) and the surface of the square (`(2*R)**2`). The programming can be a little optimized by considering only a quarter disk inside a square of side 1. We will use that method.
 
-The advantage of Monte Carlo algorithms are that they are naturally parallel ("embarrassingly parallel"), each point being independent of the others.  
+The advantage of Monte Carlo algorithms are that they are naturally parallel ("embarrassingly parallel"), each point being independent of the others.
+
+Warnings:
+
+* this is an inefficient method to compute Pi, as one more precision digit requires 100 times more points!
+* If the pseudo-random generator is biased, it can be a problem if our objective is really to compute precisely Pi. But our objective here is rather to burn the CPU!
 
 ### The programs
 
