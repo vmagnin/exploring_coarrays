@@ -23,6 +23,7 @@ In this repository, you will find:
 * A parallel version using OpenMP.
 * A parallel version using Coarrays.
 * Another coarrays version printing steadily intermediate results.
+* Versions using co_sum() instead of coarrays.
 
 ### Compilation
 
