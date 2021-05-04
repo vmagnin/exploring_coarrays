@@ -3,7 +3,7 @@
 ! Vincent Magnin, 2021-04-22
 ! Last modification: 2021-05-03
 ! MIT license
-! $ gfortran -Wall -Wextra -std=f2008 -pedantic -O3 pi_monte_carlo_serial.f90 && time ./a.out
+! $ gfortran -Wall -Wextra -std=f2018 -pedantic -O3 pi_monte_carlo_serial.f90 && time ./a.out
 ! $ ifort -O3 pi_monte_carlo_serial.f90 && time ./a.out
 
 program pi_monte_carlo_serial
@@ -15,6 +15,7 @@ program pi_monte_carlo_serial
     integer(int64)  :: i        ! Loop counter
 
     n = 1000000000
+    call random_init(repeatable=.true., image_distinct=.true.)
 
     do i = 1, n
         ! Computing a random point (x,y) into the square 0<=x<1, 0<=y<1:
