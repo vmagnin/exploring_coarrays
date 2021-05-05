@@ -4,6 +4,7 @@
 ! Last modification: 2021-05-05
 ! MIT license
 ! $ gfortran -Wall -Wextra -std=f2018 -pedantic -O3 -fopenmp pi_monte_carlo_openmp.f90 && time ./a.out
+! $ ifort -O3 -qopenmp pi_monte_carlo_openmp.f90 && time ./a.out
 
 program pi_monte_carlo_openmp
     use, intrinsic :: iso_fortran_env, only: wp=>real64, int64
