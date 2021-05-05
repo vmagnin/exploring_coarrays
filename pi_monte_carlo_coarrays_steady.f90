@@ -1,7 +1,7 @@
 ! Computes an approximation of Pi with a Monte Carlo algorithm
 ! Coarrays version with steady results
 ! Vincent Magnin, 2021-04-22
-! Last modification: 2021-05-03
+! Last modification: 2021-05-05
 ! MIT license
 ! $ caf -Wall -Wextra -std=f2018 -pedantic -O3 pi_monte_carlo_coarrays_steady.f90 && time cafrun -n 4 ./a.out
 ! or with ifort :
@@ -16,10 +16,14 @@ program pi_monte_carlo_coarrays_steady
     integer(int64)  :: i        ! Loop counter
     integer(int64)  :: j, kt, it
     integer(int64)  :: n_per_image     ! Number of parallel images
+    integer         :: t1, t2       ! Clock ticks
+    real            :: count_rate   ! Clock ticks per second
 
     n = 1000000000
     k = 0
     call random_init(repeatable=.true., image_distinct=.true.)
+
+    call system_clock(t1, count_rate)
 
     print '(i2, a, i2, a)', this_image(), "/", num_images(), " images"
     n_per_image = n / num_images()
@@ -48,4 +52,6 @@ program pi_monte_carlo_coarrays_steady
         end if
     end do
 
+    call system_clock(t2)
+    write(*,'(a, f6.3, a)') "Execution time: ", (t2 - t1) / count_rate, " s"
 end program pi_monte_carlo_coarrays_steady
