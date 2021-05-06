@@ -47,21 +47,27 @@ ifort -O3 -coarray pi_monte_carlo_coarrays.f90 && time ./a.out
 
 CPU time in seconds computed with an Intel(R) Core(TM) i7-5500U CPU @ 2.40GHz with 2 cores / 4 threads (using 4 images for parallel versions), under Ubuntu 20.10:
 
-| Version         | gfortran  | ifort   |
-| --------------- | --------- | ------- |
-| Serial          |    19.9 s |  34.8 s |
-| OpenMP          |     9.9 s |  93.0 s |
-| Coarrays        |    16.2 s |  14.4 s |
-| Coarrays steady |    33.2 s |  35.9 s |
-| Co_sum          |    13.0 s |  14.1 s |
-| Co_sum steady   |    17.1 s |  17.1 s | 
+| Version         | gfortran  | ifort   | ifx     |
+| --------------- | --------- | ------- | ------- |
+| Serial          |    20.1 s |  35.9 s | 34.9 s  |
+| OpenMP          |     9.9 s |  92.0 s | 97.1 s  |
+| Coarrays        |    14.4 s |  13.9 s |         |
+| Coarrays steady |    31.5 s |  35.1 s |         |
+| Co_sum          |    11.0 s |  13.8 s |         |
+| Co_sum steady   |    15.4 s |  16.5 s |         |
 
 The compiler versions are:
 
-* ifort 2021.2.0
-* gfortran 10.2.0
+* ifort and ifx 2021.2.0 (ifx does not yet support `corray`).
+* gfortran 10.2.0.
 
-Warning: **work in progress! This benchmark is not definitive.**
+The values are the mean values obtained with 5 runs:
+
+```bash
+$ for ((i=1;i<=5;i++)) ; do ./a.out ; done
+```
+
+Warning: this benchmark is valid for those programs, on that machine, with those compilers and libraries versions, with those compilers options. The results can not be generalized to other situations. Just try and see with your own programs. 
 	
 # Bibliography
 
