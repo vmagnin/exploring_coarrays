@@ -22,8 +22,11 @@ In this repository, you will find:
 * a serial version of the algorithm.
 * A parallel version using OpenMP.
 * A parallel version using Coarrays.
-* Another coarrays version printing steadily intermediate results.
+* Another coarrays version printing steadily intermediate results. **Bug: the intermediate results are not correct.**
 * Versions using co_sum() instead of coarrays.
+
+Concerning the pseudo-random number generator, we use a [Fortran implementation](https://github.com/jannisteunissen/xoroshiro128plus_fortran) (public domain) of the xoroshiro128+ algorithm. See also the page ["xoshiro / xoroshiro generators and the PRNG shootout"](https://prng.di.unimi.it/).
+
 
 ### Compilation
 
@@ -35,40 +38,58 @@ For gfortran, OpenCoarrays was installed with the MPICH library.
 
 The coarray versions will be compiled and run with commands like:
 ```bash
-$ caf -O3 pi_monte_carlo_coarrays.f90 && time cafrun -n 4 ./a.out
+$ caf -O3 m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90 && time cafrun -n 4 ./a.out
 ```
 
 Or:
 ```bash
-ifort -O3 -coarray pi_monte_carlo_coarrays.f90 && time ./a.out
+ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90 && time ./a.out
 ```
 
-### Results
-
-CPU time in seconds computed with an Intel(R) Core(TM) i7-5500U CPU @ 2.40GHz with 2 cores / 4 threads (using 4 images for parallel versions), under Ubuntu 20.10:
-
-| Version         | gfortran  | ifort   | ifx     |
-| --------------- | --------- | ------- | ------- |
-| Serial          |    20.1 s |  35.9 s | 34.9 s  |
-| OpenMP          |     9.9 s |  92.0 s | 97.1 s  |
-| Coarrays        |    14.4 s |  13.9 s |         |
-| Coarrays steady |    31.5 s |  35.1 s |         |
-| Co_sum          |    11.0 s |  13.8 s |         |
-| Co_sum steady   |    15.4 s |  16.5 s |         |
+### Methodology
 
 The compiler versions are:
 
-* ifort and ifx 2021.2.0 (ifx does not yet support `corray`).
+* ifort 2021.2.0.
+* ifx 2021.2.0 Beta (ifx does not yet support `corray`).
 * gfortran 10.2.0.
 
-The values are the mean values obtained with 5 runs:
+The values are the mean values obtained with 10 runs, computed by:
 
 ```bash
-$ for ((i=1;i<=5;i++)) ; do ./a.out ; done
+$ ./benchmark.sh
 ```
+on an Intel(R) Core(TM) i7-5500U CPU @ 2.40GHz, under Ubuntu 20.10.
 
 Warning: this benchmark is valid for those programs, on that machine, with those compilers and libraries versions, with those compilers options. The results can not be generalized to other situations. Just try and see with your own programs. 
-	
+
+### Results
+
+CPU time in seconds with 2 images/threads (except of course Serial):
+
+| Version              | gfortran | ifort   | ifx     |
+| -------------------- | -------- | ------- | ------- |
+| Serial               |  10.77   | 18.77   | 14.66   |
+| OpenMP               |   5.75   |  9.32   | 60.30   |
+| Coarrays             |  13.21   |  9.79   |         |
+| Coarrays steady      |  21.80   | 27.83   |         |
+| Co_sum               |   5.58   |  9.98   |         |
+| Co_sum steady        |   9.18   | 12.71   |         |
+
+With 4 images/threads (except of course Serial):
+
+| Version              | gfortran | ifort   | ifx     |
+| -------------------- | -------- | ------- | ------- |
+| Serial               |  10.77   | 18.77   | 14.66   |
+| OpenMP               |   4.36   |  8.42   | 43.21   |
+| Coarrays             |   9.47   |  9.12   |         |
+| Coarrays steady      |  19.41   | 24.78   |         |
+| Co_sum               |   4.16   |  9.29   |         |
+| Co_sum steady        |   8.18   | 10.94   |         |
+
+Further optimization: with gfortran, the `-flto` *([standard link-time optimizer](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html))* compilation option has a strong effect on this algorithm: for example, with the `co_sum` version the CPU time with 4 images falls from 4.16 s to 2.38 s!
+
+
 # Bibliography
 
 * Curcic, Milan. [Modern Fortran - Building efficient parallel applications](https://learning.oreilly.com/library/view/-/9781617295287/?ar), Manning Publications, 1st edition, novembre 2020, ISBN 978-1-61729-528-7.
