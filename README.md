@@ -32,26 +32,29 @@ Concerning the pseudo-random number generator, we use a [Fortran implementation]
 
 They will be compiled with the `-O3` flag for optimization, with gfortran and ifort. 
 
-The OpenMP version will be compiled with the `-fopenmp` flag with gfortran or `-qopenmp` with ifort.
+The OpenMP version will be compiled with the `-fopenmp` flag with gfortran or `-qopenmp` with ifort. The number of threads is set via the `OMP_NUM_THREADS` environment variable.
 
-For gfortran, OpenCoarrays was installed with the MPICH library.
 
-The coarray versions will be compiled and run with commands like:
+For gfortran, OpenCoarrays was installed with the MPICH library. The coarray versions will be compiled and run with commands like:
+
 ```bash
-$ caf -O3 m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90 && time cafrun -n 4 ./a.out
+$ caf -O3 m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90 && cafrun -n 2 ./a.out
 ```
 
-Or:
+And for ifort:
+
 ```bash
-ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90 && time ./a.out
+$ export FOR_COARRAY_NUM_IMAGES=2
+$ ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90 && ./a.out
 ```
+
 
 ### Methodology
 
 The compiler versions are:
 
 * ifort 2021.2.0.
-* ifx 2021.2.0 Beta (ifx does not yet support `corray`).
+* ifx 2021.2.0 Beta (ifx does not yet support `-corray`).
 * gfortran 10.2.0.
 
 The values are the mean values obtained with 10 runs, computed by:
@@ -87,7 +90,9 @@ With 4 images/threads (except of course Serial):
 | Co_sum               |   4.16   |  9.29   |         |
 | Co_sum steady        |   8.18   | 10.94   |         |
 
-Further optimization: with gfortran, the `-flto` *([standard link-time optimizer](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html))* compilation option has a strong effect on this algorithm: for example, with the `co_sum` version the CPU time with 4 images falls from 4.16 s to 2.38 s!
+### Further optimization
+
+With gfortran, the `-flto` *([standard link-time optimizer](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html))* compilation option has a strong effect on this algorithm: for example, with the `co_sum` version the CPU time with 4 images falls from 4.16 s to 2.38 s!
 
 
 # Bibliography
