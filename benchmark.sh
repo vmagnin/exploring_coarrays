@@ -48,35 +48,35 @@ rm -f ifort*.txt
 # All examples are compiled and launched several times, and the results are
 # copied into a txt file:
 
-# test_name="gfortran_serial"
-# echo "$test_name"
-# gfortran -O3 m_xoroshiro128plus.f90 pi_monte_carlo_serial.f90
-# launch_N_times "$runs" "$test_name.txt" "./a.out"
-# 
-# test_name="ifort_serial"
-# echo "$test_name"
-# ifort -O3 m_xoroshiro128plus.f90 pi_monte_carlo_serial.f90
-# launch_N_times "$runs" "$test_name.txt" "./a.out"
-# 
-# test_name="ifx_serial"
-# echo "$test_name"
-# ifx -O3 m_xoroshiro128plus.f90 pi_monte_carlo_serial.f90
-# launch_N_times "$runs" "$test_name.txt" "./a.out"
-# 
-# test_name="gfortran_openmp"
-# echo "$test_name"
-# gfortran -O3 -fopenmp m_xoroshiro128plus.f90 pi_monte_carlo_openmp.f90
-# launch_N_times "$runs" "$test_name.txt" "./a.out"
-# 
-# test_name="ifort_openmp"
-# echo "$test_name"
-# ifort -O3 -qopenmp m_xoroshiro128plus.f90 pi_monte_carlo_openmp.f90
-# launch_N_times "$runs" "$test_name.txt" "./a.out"
-# 
-# test_name="ifx_openmp"
-# echo "$test_name"
-# ifx -O3 -qopenmp m_xoroshiro128plus.f90 pi_monte_carlo_openmp.f90
-# launch_N_times "$runs" "$test_name.txt" "./a.out"
+test_name="gfortran_serial"
+echo "$test_name"
+gfortran -O3 m_xoroshiro128plus.f90 pi_monte_carlo_serial.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+test_name="ifort_serial"
+echo "$test_name"
+ifort -O3 m_xoroshiro128plus.f90 pi_monte_carlo_serial.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+test_name="ifx_serial"
+echo "$test_name"
+ifx -O3 m_xoroshiro128plus.f90 pi_monte_carlo_serial.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+test_name="gfortran_openmp"
+echo "$test_name"
+gfortran -O3 -fopenmp m_xoroshiro128plus.f90 pi_monte_carlo_openmp.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+test_name="ifort_openmp"
+echo "$test_name"
+ifort -O3 -qopenmp m_xoroshiro128plus.f90 pi_monte_carlo_openmp.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+test_name="ifx_openmp"
+echo "$test_name"
+ifx -O3 -qopenmp m_xoroshiro128plus.f90 pi_monte_carlo_openmp.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
 
 test_name="gfortran_coarrays"
 echo "$test_name"
@@ -88,35 +88,35 @@ echo "$test_name"
 ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90
 launch_N_times "$runs" "$test_name.txt" "./a.out"
 
-# test_name="gfortran_coarrays_steady"
-# echo "$test_name"
-# caf -O3 m_xoroshiro128plus.f90 pi_monte_carlo_coarrays_steady.f90
-# launch_N_times "$runs" "$test_name.txt" "cafrun -n ${threads} ./a.out"
-# 
-# test_name="ifort_coarrays_steady"
-# echo "$test_name"
-# ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays_steady.f90
-# launch_N_times "$runs" "$test_name.txt" "./a.out"
-# 
-# test_name="gfortran_co_sum"
-# echo "$test_name"
-# caf -O3 -flto m_xoroshiro128plus.f90 pi_monte_carlo_co_sum.f90
-# launch_N_times "$runs" "$test_name.txt" "cafrun -n ${threads} ./a.out"
-# 
-# test_name="ifort_co_sum"
-# echo "$test_name"
-# ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum.f90
-# launch_N_times "$runs" "$test_name.txt" "./a.out"
-# 
-# test_name="gfortran_co_sum_steady"
-# echo "$test_name"
-# caf -O3 m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_steady.f90
-# launch_N_times "$runs" "$test_name.txt" "cafrun -n ${threads} ./a.out"
-# 
-# test_name="ifort_co_sum_steady"
-# echo "$test_name"
-# ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_steady.f90
-# launch_N_times "$runs" "$test_name.txt" "./a.out"
+test_name="gfortran_coarrays_steady"
+echo "$test_name"
+caf -O3 m_xoroshiro128plus.f90 pi_monte_carlo_coarrays_steady.f90
+launch_N_times "$runs" "$test_name.txt" "cafrun -n ${threads} ./a.out"
+
+test_name="ifort_coarrays_steady"
+echo "$test_name"
+ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays_steady.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+test_name="gfortran_co_sum"
+echo "$test_name"
+caf -O3 -flto m_xoroshiro128plus.f90 pi_monte_carlo_co_sum.f90
+launch_N_times "$runs" "$test_name.txt" "cafrun -n ${threads} ./a.out"
+
+test_name="ifort_co_sum"
+echo "$test_name"
+ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+test_name="gfortran_co_sum_steady"
+echo "$test_name"
+caf -O3 m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_steady.f90
+launch_N_times "$runs" "$test_name.txt" "cafrun -n ${threads} ./a.out"
+
+test_name="ifort_co_sum_steady"
+echo "$test_name"
+ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_steady.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
 
 # The CPU times mean values are computed with each txt file:
 
