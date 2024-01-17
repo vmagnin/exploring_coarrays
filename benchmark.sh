@@ -1,6 +1,7 @@
 #! /bin/bash
 # Vincent Magnin, 2021-05-09
-# Last modification: 2021-05-10
+# Ryan Bignell, 2024-01-17
+# Last modification: 2024-01-17
 # Launch the Pi Monte Carlo benchmark
 # MIT license
 # Verified with shellcheck
@@ -44,6 +45,7 @@ export FOR_COARRAY_NUM_IMAGES="${threads}"
 # Cleanup:
 rm -f gfortran*.txt
 rm -f ifort*.txt
+rm -f ifx*.txt
 
 # All examples are compiled and launched several times, and the results are
 # copied into a txt file:
@@ -88,6 +90,11 @@ echo "$test_name"
 ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90
 launch_N_times "$runs" "$test_name.txt" "./a.out"
 
+test_name="ifx_coarrays"
+echo "$test_name"
+ifx -O3 -coarray=shared -coarray-num-images=${threads} m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
 test_name="gfortran_coarrays_steady"
 echo "$test_name"
 caf -O3 m_xoroshiro128plus.f90 pi_monte_carlo_coarrays_steady.f90
@@ -96,6 +103,11 @@ launch_N_times "$runs" "$test_name.txt" "cafrun -n ${threads} ./a.out"
 test_name="ifort_coarrays_steady"
 echo "$test_name"
 ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays_steady.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+test_name="ifx_coarrays_steady"
+echo "$test_name"
+ifx -O3 -coarray=shared -coarray-num-images=${threads} m_xoroshiro128plus.f90 pi_monte_carlo_coarrays_steady.f90
 launch_N_times "$runs" "$test_name.txt" "./a.out"
 
 test_name="gfortran_co_sum"
@@ -108,6 +120,12 @@ echo "$test_name"
 ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum.f90
 launch_N_times "$runs" "$test_name.txt" "./a.out"
 
+test_name="ifx_co_sum"
+echo "$test_name"
+ifx -coarray=shared -coarray-num-images=${threads} -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+
 test_name="gfortran_co_sum_steady"
 echo "$test_name"
 caf -O3 m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_steady.f90
@@ -118,8 +136,28 @@ echo "$test_name"
 ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_steady.f90
 launch_N_times "$runs" "$test_name.txt" "./a.out"
 
-# The CPU times mean values are computed with each txt file:
+test_name="ifx_co_sum_steady"
+echo "$test_name"
+ifx -O3 -coarray=shared -coarray-num-images=${threads} m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_steady.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
 
+test_name="gfortran_co_sum_openmp"
+echo "$test_name"
+caf -O3 -fopenmp -flto m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_openmp.f90
+launch_N_times "$runs" "$test_name.txt" "cafrun -n ${threads} ./a.out"
+
+test_name="ifort_co_sum_openmp"
+echo "$test_name"
+ifort -O3 -qopenmp -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_openmp.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+test_name="ifx_co_sum_openmp"
+echo "$test_name"
+ifx -coarray=shared -coarray-num-images=${threads} -qopenmp -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_openmp.f90
+launch_N_times "$runs" "$test_name.txt" "./a.out"
+
+
+# The CPU times mean values are computed with each txt file:
 echo '****************************************'
 echo ' STATISTICS (Markdown table)'
 echo '****************************************'
@@ -127,11 +165,12 @@ echo '****************************************'
 echo '| Version              | gfortran | ifort   | ifx     |'
 echo '| -------------------- | -------- | ------- | ------- |'
 echo "| Serial               |  $(mean_time 'gfortran_serial')   | $(mean_time 'ifort_serial') | $(mean_time 'ifx_serial') |"
-echo "| OpenMP               |  $(mean_time 'gfortran_openmp')   | $(mean_time 'ifort_openmp') | $(mean_time 'ifx_openmp') |"
-echo "| Coarrays             |  $(mean_time 'gfortran_coarrays')   | $(mean_time 'ifort_coarrays') |           |"
-echo "| Coarrays steady      |  $(mean_time 'gfortran_coarrays_steady')   | $(mean_time 'ifort_coarrays_steady') |           |"
-echo "| Co_sum               |  $(mean_time 'gfortran_co_sum')   | $(mean_time 'ifort_co_sum') |           |"
-echo "| Co_sum steady        |  $(mean_time 'gfortran_co_sum_steady')   | $(mean_time 'ifort_co_sum_steady')   |         |"
+echo "| OpenMP               |  $(mean_time 'gfortran_openmp')  | $(mean_time 'ifort_openmp') | $(mean_time 'ifx_openmp') |"
+echo "| Coarrays             |  $(mean_time 'gfortran_coarrays')  | $(mean_time 'ifort_coarrays') | $(mean_time 'ifx_coarrays')          |"
+echo "| Coarrays steady      |  $(mean_time 'gfortran_coarrays_steady')  | $(mean_time 'ifort_coarrays_steady') | $(mean_time 'ifx_coarrays_steady')          |"
+echo "| Co_sum               |  $(mean_time 'gfortran_co_sum')  | $(mean_time 'ifort_co_sum') | $(mean_time 'ifx_co_sum')          |"
+echo "| Co_sum steady        |  $(mean_time 'gfortran_co_sum_steady')  | $(mean_time 'ifort_co_sum_steady')   | $(mean_time 'ifort_co_sum_steady')        |"
+echo "| Co_sum & openMP      |  $(mean_time 'gfortran_co_sum_openmp')  | $(mean_time 'ifort_co_sum_openmp') | $(mean_time 'ifx_co_sum_openmp')          |"
 echo
 
 echo "Compilers versions:"

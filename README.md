@@ -90,6 +90,24 @@ With 4 images/threads (except of course Serial):
 | Co_sum               |   4.16   |  9.29   |         |
 | Co_sum steady        |   8.18   | 10.94   |         |
 
+
+With 2 images/threads (except of course Serial) with additional co_sum and openMP benchmark on on an 13th Gen Intel(R) Core(TM) i5-13500, under Ubuntu 22.04. The gfortran `co_sum` method inclues the `-flto` flag as below. The compiler versions are:
+* gfortran 11.4.0
+* ifort 2021.11.1
+* ifx 2024.0.2
+
+
+| Version              | gfortran | ifort   | ifx     |
+| -------------------- | -------- | ------- | ------- |
+| Serial               |  11.11   | 28.02   | 14.26   |
+| OpenMP               |  7.86    | 14.40   | 5.37    |
+| Coarrays             |  8.06    | 10.42   | 7.29    |
+| Coarrays steady      |  8.98    | 16.85   | 14.38   |
+| Co_sum               |  2.12    | 10.45   | 6.99    |
+| Co_sum steady        |  3.37    | 10.93   | 10.93   |
+| Co_sum & openMP      |  1.12    | 7.59    | 2.72    |
+
+
 ### Further optimization
 
 With gfortran, the `-flto` *([standard link-time optimizer](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html))* compilation option has a strong effect on this algorithm: for example, with the `co_sum` version the CPU time with 4 images falls from 4.16 s to 2.38 s!
