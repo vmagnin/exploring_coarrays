@@ -13,7 +13,7 @@ The advantage of Monte Carlo algorithms are that they are naturally parallel ("e
 Warnings:
 
 * this is an inefficient method to compute Pi, as one more precision digit requires 100 times more points!
-* If the pseudo-random generator is biased, it can be a problem if our objective is really to compute precisely Pi. But our objective here is rather to burn the CPU!
+* If the pseudo-random generator is biased, it can be a problem if our objective is really to compute precisely Pi. But our objective here is just to burn the CPU!
 
 ### The programs
 
@@ -30,10 +30,9 @@ Concerning the pseudo-random number generator, we use a [Fortran implementation]
 
 ### Compilation
 
-They will be compiled with the `-O3` flag for optimization, with gfortran and ifort. 
+They will be compiled with the `-O3` flag for optimization, with GFortran and Intel compilers ifort and ifx (the new Intel compiler, based on LLVM). 
 
 The OpenMP version will be compiled with the `-fopenmp` flag with gfortran or `-qopenmp` with ifort. The number of threads is set via the `OMP_NUM_THREADS` environment variable.
-
 
 For gfortran, OpenCoarrays was installed with the MPICH library. The coarray versions will be compiled and run with commands like:
 
@@ -48,8 +47,23 @@ $ export FOR_COARRAY_NUM_IMAGES=2
 $ ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90 && ./a.out
 ```
 
+For ifx:
+
+```bash
+$ ifx -O3 -coarray=shared -coarray-num-images=2 m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90
+```
 
 ### Methodology
+
+The values are the mean values obtained with 10 runs, computed by:
+
+```bash
+$ ./benchmark.sh
+```
+
+Warning: this benchmark is valid for those programs, on those machines, with those compilers and libraries versions, with those compilers options. The results can not be generalized easily to other situations. Just try and see with your own programs. 
+
+### Results #1 (May 2021)
 
 The compiler versions are:
 
@@ -57,16 +71,8 @@ The compiler versions are:
 * ifx 2021.2.0 Beta (ifx does not yet support `-corray`).
 * gfortran 10.2.0.
 
-The values are the mean values obtained with 10 runs, computed by:
-
-```bash
-$ ./benchmark.sh
-```
 on an Intel(R) Core(TM) i7-5500U CPU @ 2.40GHz, under Ubuntu 20.10.
 
-Warning: this benchmark is valid for those programs, on that machine, with those compilers and libraries versions, with those compilers options. The results can not be generalized to other situations. Just try and see with your own programs. 
-
-### Results
 
 CPU time in seconds with 2 images/threads (except of course Serial):
 
@@ -91,10 +97,16 @@ With 4 images/threads (except of course Serial):
 | Co_sum steady        |   8.18   | 10.94   |         |
 
 
-With 2 images/threads (except of course Serial) with additional co_sum and openMP benchmark on on an 13th Gen Intel(R) Core(TM) i5-13500, under Ubuntu 22.04. The gfortran `co_sum` method inclues the `-flto` flag as below. The compiler versions are:
+### Results #2 (January 2024)
+
+The compiler versions are:
 * gfortran 11.4.0
 * ifort 2021.11.1
 * ifx 2024.0.2
+
+on a 13th Gen Intel(R) Core(TM) i5-13500, under Ubuntu 22.04.
+
+With 2 images/threads (except of course Serial) with additional co_sum and openMP benchmark. The gfortran `co_sum` method includes the `-flto` flag as below.
 
 
 | Version              | gfortran | ifort   | ifx     |
@@ -110,7 +122,7 @@ With 2 images/threads (except of course Serial) with additional co_sum and openM
 
 ### Further optimization
 
-With gfortran, the `-flto` *([standard link-time optimizer](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html))* compilation option has a strong effect on this algorithm: for example, with the `co_sum` version the CPU time with 4 images falls from 4.16 s to 2.38 s!
+With gfortran, the `-flto` *([standard link-time optimizer](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html))* compilation option has a strong effect on this algorithm: for example, with the `co_sum` version the CPU time with 4 images falls from 4.16 s to 2.38 s (results #1)! 
 
 
 # Bibliography
