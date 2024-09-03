@@ -5,8 +5,8 @@
 ! MIT license
 ! $ caf -Wall -Wextra -std=f2018 -pedantic -O3 m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90
 ! $ cafrun -n 4 ./a.out
-! or with ifort :
-! $ ifort -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90
+! or with ifx :
+! $ ifx -O3 -coarray m_xoroshiro128plus.f90 pi_monte_carlo_coarrays.f90
 
 program pi_monte_carlo_coarrays_steady
     use, intrinsic :: iso_fortran_env, only: wp=>real64, int64

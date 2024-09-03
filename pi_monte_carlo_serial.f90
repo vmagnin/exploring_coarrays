@@ -4,7 +4,7 @@
 ! Last modification: 2021-05-09
 ! MIT license
 ! $ gfortran -Wall -Wextra -std=f2018 -pedantic -O3 m_xoroshiro128plus.f90 pi_monte_carlo_serial.f90
-! $ ifort -O3 m_xoroshiro128plus.f90 pi_monte_carlo_serial.f90
+! $ ifx -O3 m_xoroshiro128plus.f90 pi_monte_carlo_serial.f90
 
 program pi_monte_carlo_serial
     use, intrinsic :: iso_fortran_env, only: wp=>real64, int64

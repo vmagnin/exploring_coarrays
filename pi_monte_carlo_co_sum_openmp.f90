@@ -7,8 +7,8 @@
 ! MIT license
 ! $ caf -Wall -Wextra -std=f2018 -pedantic -O3 -fopenmp m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_openmp.f90
 ! $ cafrun -n 4 ./a.out
-! or with ifort :
-! $ ifort -O3 -qopenmp -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum.f90
+! or with ifx :
+! $ ifx -O3 -qopenmp -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum.f90
 
 program pi_monte_carlo_co_sum_openmp
      use, intrinsic :: iso_fortran_env, only: wp=>real64, int64
