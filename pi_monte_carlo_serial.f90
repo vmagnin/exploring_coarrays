@@ -20,7 +20,7 @@ program pi_monte_carlo_serial
 
     n = 1000000000
 
-    ! Each thread will have its own RNG seed:
+    ! Set the seed of the RNG:
     call rng%seed([ -1337_i8, 9812374_i8 ])
     x = rng%U01()
 
