@@ -2,11 +2,11 @@
 
 Let's explore the modern Fortran coarrays features for parallel programming: coarrays, images, etc.
 
-## Pi Monte Carlo
+## Computing Pi by Monte Carlo
 
 ### The algorithm
 
-Imagine a disk of radius R=1 inside a square of side 2*R. And draw N points inside the square. Count K, the number of points inside the disk. The bigger N, the closer `4*K/N` will be close to Pi. Because `K/N` will tend to be proportional to the ratio between the surface of the disk (`Pi*R**2`) and the surface of the square (`(2*R)**2`). The programming can be a little optimized by considering only a quarter disk inside a square of side 1. We will use that method.
+Imagine a disk of radius R=1 inside a square of side 2*R. And draw N points inside the square. Count K, the number of points inside the disk. The larger N, the closer `4*K/N` is to Pi. Because `K/N` will tend to be proportional to the ratio between the surface of the disk `Pi*R**2` and the surface of the square `(2*R)**2`. The programming is a little optimized by considering only a quarter disk inside a square of side 1.
 
 The advantage of Monte Carlo algorithms are that they are naturally parallel ("embarrassingly parallel"), each point being independent of the others.
 
@@ -30,9 +30,9 @@ Concerning the pseudo-random number generator, we use a [Fortran implementation]
 
 ### Compilation
 
-They will be compiled with the `-O3` flag for optimization, with GFortran and Intel compilers ifort and ifx (the new Intel compiler, based on LLVM). 
+Each program will be compiled with the `-O3` flag for optimization, with GFortran and Intel compilers ifort and ifx (the new Intel compiler, based on LLVM). 
 
-The OpenMP version will be compiled with the `-fopenmp` flag with gfortran or `-qopenmp` with ifort. The number of threads is set via the `OMP_NUM_THREADS` environment variable.
+The OpenMP version will be compiled with the `-fopenmp` flag with gfortran or `-qopenmp` with Intel compilers. The number of threads is set via the `OMP_NUM_THREADS` environment variable.
 
 For gfortran, OpenCoarrays was installed with the MPICH library. The coarray versions will be compiled and run with commands like:
 
