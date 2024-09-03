@@ -24,15 +24,15 @@ program pi_monte_carlo_co_sum_openmp
     integer         :: t1, t2       ! Clock ticks
     real            :: count_rate   ! Clock ticks per second
     integer         :: thread       ! OpenMP thread number    
-    
+
     n = 1000000000
     k = 0
 
     call system_clock(t1, count_rate)
-    
+
     !$OMP PARALLEL DEFAULT(NONE) SHARED(n_per_image,n) PRIVATE(thread, i, x, y, rng) REDUCTION(+: k)
     thread = omp_get_thread_num()
-    
+
     ! Each image will have its own RNG seed:
     call rng%seed([ -1337_i8, 9812374_i8 ] + 10*this_image() + 10 * thread)
     x = rng%U01()
@@ -41,7 +41,7 @@ program pi_monte_carlo_co_sum_openmp
     write(*, '(a, i3, a, i3)', advance='no') "Image ", this_image(), "/", num_images()
     write(*, '(a, i11, a)') " will compute", n_per_image, " points"
 
-    !$OMP DO SCHEDULE(STATIC) 
+    !$OMP DO SCHEDULE(STATIC)
     do i = 1, n_per_image
         ! Computing a random point (x,y) into the square 0<=x<1, 0<=y<1:
         x = rng%U01()

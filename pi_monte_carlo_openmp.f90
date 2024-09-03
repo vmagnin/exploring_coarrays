@@ -30,7 +30,7 @@ program pi_monte_carlo_openmp
     call rng%seed([ -1337_i8, 9812374_i8 ] + 10*thread)
     x = rng%U01()
 
-    !$OMP DO SCHEDULE(STATIC) 
+    !$OMP DO SCHEDULE(STATIC)
     do i = 1, n
         ! Computing a random point (x,y) into the square 0<=x<1, 0<=y<1:
         x = rng%U01()
