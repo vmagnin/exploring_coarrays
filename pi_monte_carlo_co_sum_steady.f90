@@ -2,7 +2,7 @@
 ! Co_sum version with steady results
 ! Vincent Magnin, 2021-04-22
 ! and Brad Richardson
-! Last modification: 2021-05-10
+! Last modification: 2024-09-03
 ! MIT license
 ! $ caf -Wall -Wextra -std=f2018 -pedantic -O3 m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_steady.f90
 ! $ cafrun -n 4 ./a.out
@@ -26,8 +26,15 @@ program pi_monte_carlo_co_sum_steady
     n = 1000000000
     k = 0
 
-    ! Each image will have its own RNG seed:
-    call rng%seed([ -1337_i8, 9812374_i8 ] + 10*this_image())
+    ! Each image have its own RNG seed, thanks to rng%jump() which
+    ! generates non-overlapping subsequences for parallel computations:
+    call rng%seed([ -1337_i8, 9812374_i8 ])
+    if (this_image() /= 1) then
+        do i = 2, this_image()
+            call rng%jump()
+        end do
+    end if
+
     x = rng%U01()
 
     call system_clock(t1, count_rate)

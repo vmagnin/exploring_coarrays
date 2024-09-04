@@ -3,17 +3,17 @@
 ! Vincent Magnin, 2021-04-22
 ! and Brad Richardson
 ! and Ryan Bignell
-! Last modification: 2024-01-17
+! Last modification: 2024-09-04
 ! MIT license
 ! $ caf -Wall -Wextra -std=f2018 -pedantic -O3 -fopenmp m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_openmp.f90
 ! $ cafrun -n 4 ./a.out
 ! or with ifx :
-! $ ifx -O3 -qopenmp -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum.f90
+! $ ifx -O3 -qopenmp -coarray m_xoroshiro128plus.f90 pi_monte_carlo_co_sum_openmp.f90
 
 program pi_monte_carlo_co_sum_openmp
      use, intrinsic :: iso_fortran_env, only: wp=>real64, int64
     use m_xoroshiro128plus
-    use omp_lib, only: omp_get_thread_num
+    use omp_lib, only: omp_get_thread_num, omp_get_num_threads
     implicit none
     type(rng_t)     :: rng          ! xoroshiro128+ pseudo-random number generator
     real(wp)        :: x, y         ! Coordinates of a point
@@ -23,18 +23,29 @@ program pi_monte_carlo_co_sum_openmp
     integer(int64)  :: n_per_image  ! Number of parallel images
     integer         :: t1, t2       ! Clock ticks
     real            :: count_rate   ! Clock ticks per second
-    integer         :: thread       ! OpenMP thread number    
+    integer         :: thread       ! OpenMP thread number
+    integer         :: nth
 
     n = 1000000000
     k = 0
 
     call system_clock(t1, count_rate)
 
-    !$OMP PARALLEL DEFAULT(NONE) SHARED(n_per_image,n) PRIVATE(thread, i, x, y, rng) REDUCTION(+: k)
+    !$OMP PARALLEL DEFAULT(NONE) SHARED(n_per_image,n) PRIVATE(thread, nth, i, x, y, rng) REDUCTION(+: k)
     thread = omp_get_thread_num()
 
-    ! Each image will have its own RNG seed:
-    call rng%seed([ -1337_i8, 9812374_i8 ] + 10*this_image() + 10 * thread)
+    ! Each image have its own RNG seed, thanks to rng%jump() which
+    ! generates non-overlapping subsequences for parallel computations:
+    call rng%seed([ -1337_i8, 9812374_i8 ])
+    ! Threads are numbered from 0, images from 1.
+    ! We compute a unique number for each task, starting from 1:
+    nth = (this_image() - 1) * omp_get_num_threads() + (thread + 1)
+    if (nth /= 1) then
+        do i = 2, nth
+            call rng%jump()
+        end do
+    end if
+
     x = rng%U01()
 
     n_per_image = n / num_images()

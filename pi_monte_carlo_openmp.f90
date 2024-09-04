@@ -1,7 +1,7 @@
 ! Computes an approximation of Pi with a Monte Carlo algorithm
 ! OpenMP version
 ! Vincent Magnin, 2021-04-22
-! Last modification: 2021-05-09
+! Last modification: 2024-09-03
 ! MIT license
 ! $ gfortran -Wall -Wextra -std=f2018 -pedantic -O3 -fopenmp m_xoroshiro128plus.f90 pi_monte_carlo_openmp.f90
 ! $ ifx -O3 -qopenmp m_xoroshiro128plus.f90 pi_monte_carlo_openmp.f90
@@ -26,8 +26,17 @@ program pi_monte_carlo_openmp
 
     !$OMP PARALLEL DEFAULT(NONE) SHARED(n) PRIVATE(thread, i, x, y, rng) REDUCTION(+: k)
     thread = omp_get_thread_num()
-    ! Each thread will have its own RNG seed:
-    call rng%seed([ -1337_i8, 9812374_i8 ] + 10*thread)
+
+    ! Each image have its own RNG seed, thanks to rng%jump() which
+    ! generates non-overlapping subsequences for parallel computations:
+    call rng%seed([ -1337_i8, 9812374_i8 ])
+    ! Threads are numbered from 0
+    if (thread+1 /= 1) then
+        do i = 2, thread+1
+            call rng%jump()
+        end do
+    end if
+
     x = rng%U01()
 
     !$OMP DO SCHEDULE(STATIC)
